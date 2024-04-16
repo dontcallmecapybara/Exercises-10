@@ -559,3 +559,268 @@ class RomanNumber_5:
 
     def __repr__(self):
         return self.rom_value if self.rom_value != None else 'None'
+
+
+# task 6
+class RomanNumber_6:
+    '''
+    Class of Roman Number.
+
+    Paratemeters:
+    -------------
+    rom_value : str
+                Gets the string and checks for a roman numerals or for an arabic numerals. 
+                If it is not a roman numeral or an arabic numeral prints 'ошибка'.
+
+    Attributes:
+    -----------
+    roman_num : dict
+                Main roman numbers (keys) and its decimal equivalents (values).
+    
+    Prints:
+    -------
+    str
+        Value of self.roman_num or None.
+    '''
+
+
+    roman_num = {'M': 1000, 'CM': 900, 'D': 500, 'CD': 400,
+                 'C': 100, 'XC': 90, 'L': 50, 'XL': 40,
+                 'X': 10, 'IX': 9, 'V': 5, 'IV': 4, 'I': 1}
+
+    def __init__(self, rom_value):
+        if RomanNumber_5.is_int(rom_value):
+            self.int_value = rom_value
+            self.rom_value = self.roman_number()
+        elif RomanNumber_5.is_roman(rom_value):
+            self.rom_value = rom_value
+            self.int_value = self.decimal_number()
+        else:
+            self.rom_value = None
+            self.int_value = None
+            print('ошибка')
+
+    def decimal_number(self):
+        '''
+        Transforms a Roman number into a decimal value.
+
+        Returns:
+        --------
+        int
+            Decimal number, which is the equivalent of the Roman number.
+        '''
+
+
+        if self.rom_value == None:
+            return None
+        else:
+            decimal_value = 0
+            prev_num = 0
+            for num in self.rom_value[::-1]:
+                cur_num = RomanNumber_5.roman_num[num]
+                if cur_num >= prev_num:
+                    decimal_value += cur_num
+                else:
+                    decimal_value -= cur_num
+                prev_num = cur_num
+            
+            return decimal_value
+
+    def roman_number(self):
+        '''
+        Transforms an arabic number into a roman number.
+
+        Returns:
+        --------
+        str
+            A roman number, which is the equivalent of the arabic number.
+        '''
+
+
+        if self.int_value == None:
+            return None
+        else:
+            number = self.int_value
+            roman = ''
+            for key, value in RomanNumber_5.roman_num.items():
+                while number >= value:
+                    roman += key
+                    number -= value
+            return roman
+
+    @staticmethod
+    def is_int(value):
+        '''
+        Checks the source string for an arabic number.
+
+        Parameters:
+        -----------
+        value : int
+                An integer which could be an arabic number.
+
+        Returns:
+        --------
+        bool
+             True if value is the an arabic number or False if isn't.
+        '''
+
+
+        if isinstance(value, int) and 0 < value < 4000:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def is_roman(value):
+        '''
+        Checks the source string for a roman number.
+
+        Parameters:
+        -----------
+        value : str
+                A string which could be a roman number.
+
+        Returns:
+        --------
+        bool
+             True if value is a roman number or False if isn't.
+        '''
+
+
+        if isinstance(value, str):
+            numbers = list(value)
+            if all(number in RomanNumber_5.roman_num for number in numbers):
+                for comb in ['IV', 'IX', 'XL', 'XC', 'CD', 'CM']:
+                    if value.count(comb) > 1:
+                        return False
+
+                for i in range(len(numbers) - 1):
+                    if RomanNumber_5.roman_num[numbers[i]] < RomanNumber_5.roman_num[numbers[i+1]]:
+                        if numbers[i] == 'I' and numbers[i+1] not in ['V', 'X']:
+                            print(numbers[i], numbers[i+1])
+                            return False
+                        elif numbers[i] == 'X' and numbers[i+1] not in ['L', 'C']:
+                            print(numbers[i], numbers[i+1])
+                            return False
+                        elif numbers[i] == 'C' and numbers[i+1] not in ['D', 'M']:
+                            print(numbers[i], numbers[i+1])
+                            return False
+                
+                for j in range(len(numbers) - 2):
+                    for symbol in ['V', 'L', 'D']:
+                        if numbers[j] == symbol and numbers[j+1] == symbol:
+                            return False
+                
+                for l in range(len(numbers) - 3):
+                    for symbol in ['I', 'X', 'C', 'M']:
+                        if numbers[l] == symbol and numbers[l+1] == symbol and numbers[l+2] == symbol and numbers[l+3] == symbol:
+                            return False       
+            else:
+                return False
+            
+            return True
+        
+        else:
+            return False
+
+    def __add__(self, other):
+        if isinstance(other, RomanNumber_5):
+            return RomanNumber_5(self.int_value + other.int_value)
+        else:
+            return 'ошибка'
+        
+    def __iadd__(self, other):
+        if isinstance(other, RomanNumber_5):
+            self.int_value += other.int_value
+            self.rom_value = self.roman_number()  # Обновите rom_value
+            return self
+        else:
+            print('ошибка')
+    
+    def __sub__(self, other):
+        if isinstance(other, RomanNumber_5):
+            return RomanNumber_5(self.int_value - other.int_value)
+        else:
+            return 'ошибка'
+    
+    def __isub__(self, other):
+        if isinstance(other, RomanNumber_5):
+            self.int_value -= other.int_value
+            self.rom_value = self.roman_number()  # Обновите rom_value
+            return self
+        else:
+            print('ошибка')
+        
+    def __mul__(self, other):
+        if isinstance(other, RomanNumber_5):
+            return RomanNumber_5(self.int_value * other.int_value)
+        else:
+            return 'ошибка'
+    
+    def __imul__(self, other):
+        if isinstance(other, RomanNumber_5):
+            self.int_value *= other.int_value
+            self.rom_value = self.roman_number()  # Обновите rom_value
+            return self
+        else:
+            print('ошибка')
+    
+    def __truediv__(self, other):
+        if isinstance(other, RomanNumber_5):
+            return RomanNumber_5(self.int_value / other.int_value)
+        else:
+            print('ошибка')
+            return None
+        
+    def __itruediv__(self, other):
+        if isinstance(other, RomanNumber_5):
+            self.int_value /= other.int_value
+            self.rom_value = self.roman_number()  # Обновите rom_value
+            return self
+        else:
+            print('ошибка')
+    
+    def __floordiv__(self, other):
+        if isinstance(other, RomanNumber_5):
+            return RomanNumber_5(self.int_value // other.int_value)
+        else:
+            return 'ошибка'
+    
+    def __ifloordiv__(self, other):
+        if isinstance(other, RomanNumber_5):
+            self.int_value //= other.int_value
+            self.rom_value = self.roman_number()  # Обновите rom_value
+            return self
+        else:
+            print('ошибка')
+    
+    def __mod__(self, other):
+        if isinstance(other, RomanNumber_5):
+            return RomanNumber_5(self.int_value % other.int_value)
+        else:
+            return 'ошибка'
+        
+    def __imod__(self, other):
+        if isinstance(other, RomanNumber_5):
+            self.int_value %= other.int_value
+            self.rom_value = self.roman_number()  # Обновите rom_value
+            return self
+        else:
+            print('ошибка')
+    
+    def __pow__(self, other):
+        if isinstance(other, RomanNumber_5):
+            return RomanNumber_5(self.int_value ** other.int_value)
+        else:
+            return 'ошибка'
+    
+    def __ipow__(self, other):
+        if isinstance(other, RomanNumber_5):
+            self.int_value **= other.int_value
+            self.rom_value = self.roman_number()  # Обновите rom_value
+            return self
+        else:
+            print('ошибка')
+
+    def __repr__(self):
+        return str(self.rom_value)
